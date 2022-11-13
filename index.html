@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spaceship Battle</title>
+    <link rel="icon" href="assets/ico/favicon.ico">
+
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Outfit&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: black;
+        }
+
+        .noselect {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .text {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 15pt;
+            font-weight: bolder;
+            color: white;
+            -webkit-text-stroke: 1px #000000;
+            position: fixed;
+            top: 10px;
+            width: 100%;
+            text-align: left;
+            z-index: 100;
+            display: block;
+        }
+
+        .text#score-txt {
+            left: 10px;
+        }
+
+        .text#score-value {
+            left: 75px;
+        }
+
+        .text#health-txt {
+            top: 35px;
+            left: 10px;
+        }
+
+        .text#health-value {
+            top: 35px;
+            left: 90px;
+        }
+
+        .text#lvl-txt {
+            top: 60px;
+            left: 10px;
+        }
+
+        .text#lvl-value {
+            top: 60px;
+            left: 45px;
+        }
+
+        #fill {
+            position: fixed;
+            background: black;
+            min-height: 100%;
+            height: 100vh;
+            min-width: 100%;
+            width: 100vh;
+            opacity: 0.75;
+        }
+
+        .row-center {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .text-ui{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: rgb(255, 255, 255);
+            /*white text*/
+            font-weight: bold;
+        }
+
+        .text-title {
+            font-family: Orbitron, sans-serif;
+            font-size: 200px;
+            color: rgb(255, 255, 255);
+            /*white text*/
+            font-weight: bold;
+        }
+
+        .text-ui h1, .text-title h1 {
+            color: rgb(255, 196, 0);
+        }
+
+        /* hide element */
+        #fill {
+            display: block;
+        }
+        #gamestart {
+            display: block;
+        }
+        #loading {
+            display: none;
+        }
+        #gameover {
+            display: none;
+        }
+        #pause {
+            display: none;
+        }
+        #bosshealth {
+            display: none;
+        }
+        #power-missile {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text" id="score-txt">Score:</div>
+    <div class="text" id="score-value">0</div>
+    <div class="text" id="health-txt">Health:</div>
+    <div class="text" id="health-value">3</div>
+    <div class="text" id="lvl-txt">Lvl:</div>
+    <div class="text" id="lvl-value">-</div>
+    <div class="fixed-bottom ms-2 noselect">
+        <img src="assets/img/controls.png" alt="controls">
+    </div>
+    <div class="fixed-bottom ms-2 noselect">
+        <img src="assets/img/x3missile_tips_mini.png" alt="controls" style="margin-left: 300px;">
+    </div>
+    <div class="fixed-bottom me-2 mb-2 d-block">
+        <div class="d-flex flex-row align-content-center justify-content-end">
+            <h6 class="noselect p-2 py-1 rounded-3 text-white text-center fw-bolder bg-dark">P - Pause</h6>
+        </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+
+
+    <!-- background -->
+    <div id="fill" class="container px-0">
+        <div class="d-block">
+            <div style="width: 100%; height: 100vh;">
+            <div class="w-100 h-100 bg-image" style="background-image: url('assets/background/space-bg-fix.jpg'); background-size: cover; background-position: center center;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- missile power ui -->
+    <div id="power-missile">
+        <div class="fixed-bottom me-2 mb-2 d-block">
+            <div class="d-flex flex-row align-content-center justify-content-end" style="margin-right: 100px;">
+                <h6 class="noselect p-2 py-1 rounded-3 text-white text-center fw-bolder bg-success" id="power-missile-time">x3 Missile (99s)</h6>
+            </div>
+        </div>
+    </div>
+
+    <!-- boss health -->
+    <div id="bosshealth" class="container overflow-hidden position-fixed start-50 translate-middle-x ms-5 noselect">
+        <div class="row p-3">
+            <div class="text-ui col">
+                <div class="overflow-hidden text-end" id="boss-health-txt">Boss Health:</div>
+            </div>
+            <div class="text-ui col">
+                <div id="boss-health-value">3</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- game start ui -->
+    <div id="gamestart" class="container noselect">
+        <div class="row-center row-cols-1">
+            <div class="text-title col-lg-12">
+                <h1 style="text-align:center;">SPACESHIP</h1>
+                <h1 style="text-align:center;">BATTLE</h1>
+            </div>
+            <div class="text-ui col-lg-12 text-center">
+                <!-- <h4 style="text-align:center;">Press Enter to Start</h4> -->
+                <button id="start-btn" type="button" class="btn btn-light fw-bold px-5 mt-2">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- loading ui -->
+    <div id="loading" class="container noselect">
+        <div class="row-center row-cols-1">
+            <div class="text-ui col-lg-12">
+                <h1 style="text-align:center;">Loading...</h1>
+            </div>
+            <div class="text-ui col-lg-12">
+                <h4 style="text-align:center;"></h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- gameover ui -->
+    <div id="gameover" class="container noselect">
+        <div class="row-center row-cols-1">
+            <div class="text-ui col-lg-12">
+                <h1 style="text-align:center;">Game Over</h1>
+            </div>
+            <div class="text-ui col-lg-12">
+                <h4 style="text-align:center;">Press Enter to Restart</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- pause ui -->
+    <div id="pause" class="container noselect">
+        <div class="row-center row-cols-1">
+            <div class="text-ui col-lg-12">
+                <h1 style="text-align:center;">Pause</h1>
+            </div>
+            <div class="text-ui col-lg-12">
+                <h4 style="text-align:center;">Press P to Resume</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+</body>
+</html>
